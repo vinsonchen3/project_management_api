@@ -1,5 +1,6 @@
 from db.database import Base
 from db.models.task import Task, user_task_association
+from db.models.comment import Comment
 from datetime import datetime
 from sqlalchemy import String, Integer, Boolean, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -16,4 +17,7 @@ class User(Base):
     # relationships
     tasks: Mapped[list[Task]] = relationship(
         Task, secondary=user_task_association, back_populates="assignees"
+    )
+    comments: Mapped[list[Comment]] = relationship(
+        Comment, back_populates="author", cascade="all, delete-orphan"
     )

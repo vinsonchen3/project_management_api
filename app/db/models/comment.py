@@ -1,0 +1,27 @@
+from db.database import Base
+from db.models.user import User
+from db.models.task import Task
+from datetime import datetime
+from sqlalchemy import String, Integer, Boolean, DateTime, Text, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    date_posted: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    author_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    task_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False
+    )
+
+    # relationships
+    author: Mapped[User] = relationship(User, back_populates="comments")
+    task: Mapped[Task] = relationship(Task, back_populates="comments")
