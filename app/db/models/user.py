@@ -14,9 +14,9 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(200), nullable=False)
 
     # relationships
-    tasks: Mapped[list["Task"]] = relationship(
+    tasks: Mapped[list["Task"]] = relationship( # type: ignore
         "Task", secondary=user_task_association, back_populates="assignees"
     )
-    comments: Mapped[list["Comment"]] = relationship(
+    comments: Mapped[list["Comment"]] = relationship( # type: ignore
         "Comment", back_populates="author", cascade="all, delete-orphan"
     )

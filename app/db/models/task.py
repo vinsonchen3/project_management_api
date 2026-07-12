@@ -34,9 +34,9 @@ class Task(Base):
     status: Mapped[str] = mapped_column(String, default="Not Started")
 
     # relationships
-    assignees: Mapped[list["User"]] = relationship(
+    assignees: Mapped[list["User"]] = relationship( # type: ignore
         "User", secondary=user_task_association, back_populates="tasks"
     )
-    comments: Mapped[list["Comment"]] = relationship(
+    comments: Mapped[list["Comment"]] = relationship( # type: ignore
         "Comment", back_populates="task", cascade="all, delete-orphan"
     )
