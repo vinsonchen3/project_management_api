@@ -27,6 +27,8 @@ user_task_association = Table(
 
 
 class Task(Base):
+    __tablename__ = "tasks"
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(250), default="Untitiled")
     description: Mapped[str] = mapped_column(Text)
