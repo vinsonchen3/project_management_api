@@ -1,6 +1,4 @@
 from db.database import Base
-from db.models.user import User
-from db.models.task import Task
 from datetime import datetime
 from sqlalchemy import String, Integer, Boolean, DateTime, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -23,5 +21,5 @@ class Comment(Base):
     )
 
     # relationships
-    author: Mapped[User] = relationship(User, back_populates="comments")
-    task: Mapped[Task] = relationship(Task, back_populates="comments")
+    author: Mapped["User"] = relationship("User", back_populates="comments")
+    task: Mapped["Task"] = relationship("Task", back_populates="comments")

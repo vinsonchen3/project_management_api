@@ -1,6 +1,4 @@
 from db.database import Base
-from db.models.user import User
-from db.models.comment import Comment
 from datetime import datetime
 from sqlalchemy import (
     String,
@@ -30,15 +28,15 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    title: Mapped[str] = mapped_column(String(250), default="Untitiled")
+    title: Mapped[str] = mapped_column(String(250), default="Untitled")
     description: Mapped[str] = mapped_column(Text)
     # TODO: make status use enums for status codes insteaad of string
     status: Mapped[str] = mapped_column(String, default="Not Started")
 
     # relationships
-    assignees: Mapped[list[User]] = relationship(
-        User, secondary=user_task_association, back_populates="tasks"
+    assignees: Mapped[list["User"]] = relationship(
+        "User", secondary=user_task_association, back_populates="tasks"
     )
-    comments: Mapped[list[Comment]] = relationship(
-        Comment, back_populates="task", cascade="all, delete-orphan"
+    comments: Mapped[list["Comment"]] = relationship(
+        "Comment", back_populates="task", cascade="all, delete-orphan"
     )

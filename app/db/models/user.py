@@ -1,6 +1,5 @@
 from db.database import Base
-from db.models.task import Task, user_task_association
-from db.models.comment import Comment
+from db.models.task import user_task_association
 from datetime import datetime
 from sqlalchemy import String, Integer, Boolean, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -15,9 +14,9 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(200), nullable=False)
 
     # relationships
-    tasks: Mapped[list[Task]] = relationship(
-        Task, secondary=user_task_association, back_populates="assignees"
+    tasks: Mapped[list["Task"]] = relationship(
+        "Task", secondary=user_task_association, back_populates="assignees"
     )
-    comments: Mapped[list[Comment]] = relationship(
-        Comment, back_populates="author", cascade="all, delete-orphan"
+    comments: Mapped[list["Comment"]] = relationship(
+        "Comment", back_populates="author", cascade="all, delete-orphan"
     )
