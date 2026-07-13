@@ -21,8 +21,8 @@ class CommentRepository:
         )
 
         self.db.add(comment)
-        await self.db.commit()
-        await self.db.refresh(comment)
+        await self.db.flush()
+        # await self.db.refresh(comment)
 
         return comment
 
@@ -63,10 +63,10 @@ class CommentRepository:
         return result.scalars().all()
 
     async def update(self, comment: Comment) -> Comment:
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(comment)
         return comment
 
     async def delete(self, comment: Comment) -> None:
         await self.db.delete(comment)
-        await self.db.commit()
+        await self.db.flush()

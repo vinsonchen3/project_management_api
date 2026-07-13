@@ -18,11 +18,12 @@ class TaskRepository:
             title=title,
             description=description,
             status=status,
+            assignees = []
         )
 
         self.db.add(task)
-        await self.db.commit()
-        await self.db.refresh(task)
+        await self.db.flush()
+        # await self.db.refresh(task)
 
         return task
 
@@ -46,10 +47,10 @@ class TaskRepository:
         return result.scalars().all()
 
     async def update(self, task: Task) -> Task:
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(task)
         return task
 
     async def delete(self, task: Task) -> None:
         await self.db.delete(task)
-        await self.db.commit()
+        await self.db.flush()
