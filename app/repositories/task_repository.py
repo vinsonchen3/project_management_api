@@ -18,7 +18,6 @@ class TaskRepository:
             title=title,
             description=description,
             status=status,
-            assignees = []
         )
 
         self.db.add(task)
