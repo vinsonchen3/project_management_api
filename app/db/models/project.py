@@ -1,8 +1,6 @@
 from db.database import Base
 from sqlalchemy import Table, Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from db.models.user import User
-from db.models.task import Task
 
 project_user_association = Table(
     "project_user",
@@ -28,7 +26,7 @@ class Project(Base):
         secondary=project_user_association,
         back_populates="projects",
     )
-    tasks: Mapped[list["Task"]] = relationship(
+    tasks: Mapped[list["Task"]] = relationship( # type: ignore
         back_populates="project",
         cascade="all, delete-orphan",
     )

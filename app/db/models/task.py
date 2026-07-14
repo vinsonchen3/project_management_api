@@ -40,3 +40,11 @@ class Task(Base):
     comments: Mapped[list["Comment"]] = relationship( # type: ignore
         back_populates="task", cascade="all, delete-orphan"
     )
+
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id"),
+        nullable = False
+    )
+    project: Mapped["Project"] = relationship( # type: ignore
+        back_populates="tasks"
+    )
