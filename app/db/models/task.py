@@ -35,8 +35,8 @@ class Task(Base):
 
     # relationships
     assignees: Mapped[list["User"]] = relationship( # type: ignore
-        "User", secondary=user_task_association, back_populates="tasks"
+        secondary=user_task_association, back_populates="tasks"
     )
     comments: Mapped[list["Comment"]] = relationship( # type: ignore
-        "Comment", back_populates="task", cascade="all, delete-orphan"
+        back_populates="task", cascade="all, delete-orphan"
     )

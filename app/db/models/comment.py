@@ -21,5 +21,5 @@ class Comment(Base):
     )
 
     # relationships
-    author: Mapped["User"] = relationship("User", back_populates="comments") # type: ignore
-    task: Mapped["Task"] = relationship("Task", back_populates="comments") # type: ignore
+    author: Mapped["User"] = relationship(back_populates="comments") # type: ignore
+    task: Mapped["Task"] = relationship(back_populates="comments") # type: ignore
