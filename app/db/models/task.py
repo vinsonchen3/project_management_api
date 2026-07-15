@@ -9,7 +9,9 @@ from sqlalchemy import (
     ForeignKey,
     Table,
     Column,
+    Enum
 )
+from db.enums import TaskStatus
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 user_task_association = Table(
@@ -30,8 +32,7 @@ class Task(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(250), default="Untitled")
     description: Mapped[str] = mapped_column(Text)
-    # TODO: make status use enums for status codes insteaad of string
-    status: Mapped[str] = mapped_column(String, default="Not Started")
+    status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), default=TaskStatus.NOT_STARTED, nullable=False)
 
     # relationships
     assignees: Mapped[list["User"]] = relationship( # type: ignore

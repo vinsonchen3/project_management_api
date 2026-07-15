@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.task import Task
+from db.enums import TaskStatus
 
 
 class TaskRepository:
@@ -12,7 +13,7 @@ class TaskRepository:
         self,
         title: str,
         description: str,
-        status: str = "Not Started",
+        status: TaskStatus = TaskStatus.NOT_STARTED,
     ) -> Task:
         task = Task(
             title=title,
@@ -40,7 +41,7 @@ class TaskRepository:
 
     async def get_by_status(
         self,
-        status: str,
+        status: TaskStatus,
     ) -> list[Task]:
         result = await self.db.execute(select(Task).where(Task.status == status))
         return result.scalars().all()
