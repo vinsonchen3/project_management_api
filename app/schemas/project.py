@@ -14,6 +14,7 @@ class ProjectResponse(ProjectBase):
     owner_id: int
 
 class ProjectDetailed(ProjectResponse):
+    owner: "UserResponse"
     members: list["UserResponse"] = []
     tasks: list["TaskResponse"] = []
 
