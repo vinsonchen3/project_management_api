@@ -1,6 +1,16 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+
+
+app = FastAPI(title="Project Management API")
+
+# add routers here
+
 
 @app.get("/")
 def root():
