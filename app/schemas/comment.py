@@ -14,3 +14,9 @@ class CommentResponse(CommentBase):
     date_posted: datetime
     author_id: int 
     task_id: int
+
+class CommentDetailed(CommentResponse):
+    author: "UserResponse"
+
+from schemas.user import UserResponse
+CommentDetailed.model_rebuild()
