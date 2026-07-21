@@ -7,7 +7,7 @@ class CommentBase(BaseModel):
 class CommentCreate(CommentBase):
     task_id: int 
 
-class CommentPublic(CommentBase):
+class CommentResponse(CommentBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

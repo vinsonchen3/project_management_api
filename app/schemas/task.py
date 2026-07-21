@@ -12,7 +12,7 @@ class TaskBase(BaseModel):
 class TaskCreate(TaskBase):
     pass 
 
-class TaskPublic(TaskBase):
+class TaskResponse(TaskBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

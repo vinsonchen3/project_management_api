@@ -9,7 +9,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(min_length=8, description="Password; minimum 8 characters")
 
-class UserPublic(BaseModel):
+class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
