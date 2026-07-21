@@ -1,4 +1,9 @@
 from pydantic import BaseModel, ConfigDict, Field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from schemas.user import UserResponse
+    from schemas.task import TaskResponse
 
 
 class ProjectBase(BaseModel):
@@ -21,9 +26,3 @@ class ProjectDetailed(ProjectResponse):
     owner: "UserResponse"
     members: list["UserResponse"] = []
     tasks: list["TaskResponse"] = []
-
-
-from schemas.user import UserResponse
-from schemas.task import TaskResponse
-
-ProjectDetailed.model_rebuild()

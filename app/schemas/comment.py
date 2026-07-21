@@ -1,5 +1,9 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from schemas.user import UserResponse
 
 
 class CommentBase(BaseModel):
@@ -21,8 +25,3 @@ class CommentResponse(CommentBase):
 
 class CommentDetailed(CommentResponse):
     author: "UserResponse"
-
-
-from schemas.user import UserResponse
-
-CommentDetailed.model_rebuild()

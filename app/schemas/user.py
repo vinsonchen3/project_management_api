@@ -1,5 +1,11 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from schemas.project import ProjectResponse
+    from schemas.task import TaskResponse
+    from schemas.comment import CommentResponse
 
 
 class UserBase(BaseModel):
@@ -23,10 +29,3 @@ class UserDetailed(UserResponse):
     projects: list["ProjectResponse"] = []
     tasks: list["TaskResponse"] = []
     comments: list["CommentResponse"] = []
-
-
-from schemas.project import ProjectResponse
-from schemas.task import TaskResponse
-from schemas.comment import CommentResponse
-
-UserDetailed.model_rebuild()

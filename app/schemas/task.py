@@ -1,6 +1,12 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import List
 from db.enums import TaskStatus
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from schemas.user import UserResponse
+    from schemas.project import ProjectResponse
+    from schemas.comment import CommentResponse
 
 
 class TaskBase(BaseModel):
@@ -26,9 +32,3 @@ class TaskDetailed(TaskResponse):
     assignees: List["UserResponse"] = []
     comments: List["CommentResponse"] = []
     project: "ProjectResponse"
-
-from schemas.user import UserResponse
-from schemas.comment import CommentResponse
-from schemas.project import ProjectResponse
-
-TaskDetailed.model_rebuild()
