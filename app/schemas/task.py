@@ -29,6 +29,6 @@ class TaskResponse(TaskBase):
 class TaskDetailed(TaskResponse):
     model_config = ConfigDict(from_attributes=True)
 
-    assignees: List["UserResponse"] = []
-    comments: List["CommentResponse"] = []
+    assignees: List["UserResponse"] = Field(default_factory=list)
+    comments: List["CommentResponse"] = Field(default_factory=list)
     project: "ProjectResponse"

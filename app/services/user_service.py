@@ -18,10 +18,10 @@ class UserService:
         password: str,
     ) -> User:
         if await self.user_repo.exists_by_username(username):
-            raise DuplicateUsernameError
+            raise DuplicateUsernameError()
 
         if await self.user_repo.exists_by_email(email):
-            raise DuplicateEmailError
+            raise DuplicateEmailError()
 
         return await self.user_repo.create(
             username=username,

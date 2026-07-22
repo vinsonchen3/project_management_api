@@ -24,5 +24,5 @@ class ProjectResponse(ProjectBase):
 
 class ProjectDetailed(ProjectResponse):
     owner: "UserResponse"
-    members: list["UserResponse"] = []
-    tasks: list["TaskResponse"] = []
+    members: list["UserResponse"] = Field(default_factory=list)
+    tasks: list["TaskResponse"] = Field(default_factory=list)

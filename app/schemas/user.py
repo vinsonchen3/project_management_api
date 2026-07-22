@@ -25,7 +25,7 @@ class UserResponse(BaseModel):
 
 
 class UserDetailed(UserResponse):
-    owned_projects: list["ProjectResponse"] = []
-    projects: list["ProjectResponse"] = []
-    tasks: list["TaskResponse"] = []
-    comments: list["CommentResponse"] = []
+    owned_projects: list["ProjectResponse"] = Field(default_factory=list)
+    projects: list["ProjectResponse"] = Field(default_factory=list)
+    tasks: list["TaskResponse"] = Field(default_factory=list)
+    comments: list["CommentResponse"] = Field(default_factory=list)

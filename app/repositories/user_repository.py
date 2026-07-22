@@ -55,3 +55,20 @@ class UserRepository:
             select(User).options(selectinload(User.tasks)).where(User.id == user_id)
         )
         return result.scalar_one_or_none()
+
+    async def get_by_id_detailed(
+        self,
+        user_id: int,
+    ) -> User | None:
+        result = await self.db.execute(
+            select(User)
+            .options(
+                selectinload(User.owned_projects),
+                selectinload(User.projects),
+                selectinload(User.tasks),
+                selectinload(User.comments),
+            )
+            .where(User.id == user_id)
+        )
+
+        return result.scalar_one_or_none()
