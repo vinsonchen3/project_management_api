@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.project import Project
@@ -32,6 +33,28 @@ class ProjectRepository:
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_by_id_with_members(
+        self,
+        project_id: int,
+    ) -> Project | None:
+        result = await self.db.execute(
+            select(Project)
+            .options(selectinload(Project.members))
+            .where(Project.id == project_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def get_by_id_with_tasks(
+        self,
+        project_id: int,
+    ) -> Project | None:
+        result = await self.db.execute(
+            select(Project)
+            .options(selectinload(Project.tasks))
+            .where(Project.id == project_id)
+        )
+        return result.scalar_one_or_none()
+
     async def get_all(
         self,
         skip: int = 0,
@@ -40,6 +63,14 @@ class ProjectRepository:
         stmt = select(Project).offset(skip).limit(limit)
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
+
+    async def update(
+        self,
+        project: Project,
+    ) -> Project:
+        await self.db.flush()
+        await self.db.refresh(project)
+        return project
 
     async def delete(
         self,
