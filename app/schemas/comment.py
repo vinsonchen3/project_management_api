@@ -14,6 +14,10 @@ class CommentCreate(CommentBase):
     task_id: int
 
 
+class CommentUpdate(BaseModel):
+    content: str = Field(min_length=1)
+
+
 class CommentResponse(CommentBase):
     model_config = ConfigDict(from_attributes=True)
 
