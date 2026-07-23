@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models.task import Task
@@ -13,11 +14,13 @@ class TaskRepository:
         self,
         title: str,
         description: str,
-        status: TaskStatus = TaskStatus.NOT_STARTED,
+        project_id: int,
+        status: TaskStatus = TaskStatus.TO_DO,
     ) -> Task:
         task = Task(
             title=title,
             description=description,
+            project_id = project_id,
             status=status,
         )
 
@@ -45,6 +48,21 @@ class TaskRepository:
     ) -> list[Task]:
         result = await self.db.execute(select(Task).where(Task.status == status))
         return result.scalars().all()
+
+    async def get_by_id_detailed(
+        self,
+        task_id: int,
+    ) -> Task | None:
+        result = await self.db.execute(
+            select(Task)
+            .options(
+                selectinload(Task.project),
+                selectinload(Task.assignees),
+                selectinload(Task.comments),
+            )
+            .where(Task.id == task_id)
+        )
+        return result.scalar_one_or_none()
 
     async def update(self, task: Task) -> Task:
         await self.db.flush()

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class TaskBase(BaseModel):
     title: str = Field(default="Untitled", max_length=250)
     description: str | None = Field(default=None, description="Description of task")
-    status: TaskStatus = Field(default="Not Started")
+    status: TaskStatus = Field(default=TaskStatus.TO_DO)
 
 
 class TaskCreate(TaskBase):

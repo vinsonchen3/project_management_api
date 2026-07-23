@@ -1,6 +1,7 @@
 from enum import Enum 
 
 class TaskStatus(Enum):
-    NOT_STARTED = "Not Started"
+    TO_DO = "To Do"
     IN_PROGRESS = "In Progress"
+    UNDER_REVIEW = "Under Review"
     COMPLETED = "Completed"
