@@ -30,22 +30,16 @@ class TaskService:
         title: str,
         description: str | None,
         project_id: int,
-        status: TaskStatus = TaskStatus.NOT_STARTED,
+        status: TaskStatus = TaskStatus.TO_DO,
     ) -> Task:
         project = await self.project_repo.get_by_id(project_id)
 
         if project is None:
             raise ProjectNotFoundError()
 
-        task = await self.task_repo.create(
-            title=title,
-            description=description,
-            status=status,
+        return await self.task_repo.create(
+            title=title, description=description, status=status, project_id=project_id
         )
-
-        task.project = project
-
-        return await self.task_repo.update(task)
 
     async def update_task(
         self,

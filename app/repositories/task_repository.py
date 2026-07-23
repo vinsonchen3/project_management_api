@@ -13,7 +13,7 @@ class TaskRepository:
     async def create(
         self,
         title: str,
-        description: str,
+        description: str | None,
         project_id: int,
         status: TaskStatus = TaskStatus.TO_DO,
     ) -> Task:
