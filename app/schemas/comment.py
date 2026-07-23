@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from schemas.user import UserResponse
+    from app.schemas.user import UserResponse
 
 
 class CommentBase(BaseModel):

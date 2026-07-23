@@ -6,9 +6,9 @@ from app.core.exceptions import (
 from app.repositories.project_repository import ProjectRepository
 from app.repositories.user_repository import UserRepository
 
-from db.models.project import Project
-from db.models.user import User
-from db.models.task import Task
+from app.db.models.project import Project
+from app.db.models.user import User
+from app.db.models.task import Task
 
 
 class ProjectService:

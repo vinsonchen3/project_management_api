@@ -1,4 +1,4 @@
-from db.database import Base
+from app.db.database import Base
 from datetime import datetime
 from sqlalchemy import String, Integer, Boolean, DateTime, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,5 +21,5 @@ class Comment(Base):
     )
 
     # relationships
-    author: Mapped["User"] = relationship(back_populates="comments") # type: ignore
-    task: Mapped["Task"] = relationship(back_populates="comments") # type: ignore
+    author: Mapped["User"] = relationship(back_populates="comments")  # type: ignore
+    task: Mapped["Task"] = relationship(back_populates="comments")  # type: ignore

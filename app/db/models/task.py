@@ -1,4 +1,4 @@
-from db.database import Base
+from app.db.database import Base
 from datetime import datetime
 from sqlalchemy import (
     String,
@@ -9,9 +9,9 @@ from sqlalchemy import (
     ForeignKey,
     Table,
     Column,
-    Enum
+    Enum,
 )
-from db.enums import TaskStatus
+from app.db.enums import TaskStatus
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 user_task_association = Table(
@@ -32,20 +32,17 @@ class Task(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(250), default="Untitled")
     description: Mapped[str] = mapped_column(Text)
-    status: Mapped[TaskStatus] = mapped_column(Enum(TaskStatus), default=TaskStatus.TO_DO, nullable=False)
+    status: Mapped[TaskStatus] = mapped_column(
+        Enum(TaskStatus), default=TaskStatus.TO_DO, nullable=False
+    )
 
     # relationships
-    assignees: Mapped[list["User"]] = relationship( # type: ignore
+    assignees: Mapped[list["User"]] = relationship(  # type: ignore
         secondary=user_task_association, back_populates="tasks"
     )
-    comments: Mapped[list["Comment"]] = relationship( # type: ignore
+    comments: Mapped[list["Comment"]] = relationship(  # type: ignore
         back_populates="task", cascade="all, delete-orphan"
     )
 
-    project_id: Mapped[int] = mapped_column(
-        ForeignKey("projects.id"),
-        nullable = False
-    )
-    project: Mapped["Project"] = relationship( # type: ignore
-        back_populates="tasks"
-    )
+    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), nullable=False)
+    project: Mapped["Project"] = relationship(back_populates="tasks")  # type: ignore

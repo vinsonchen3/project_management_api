@@ -1,9 +1,8 @@
 import asyncio
 
-from db.database import AsyncSessionLocal
-from repositories.user_repository import UserRepository
-from repositories.task_repository import TaskRepository
-
+from app.db.database import AsyncSessionLocal
+from app.repositories.user_repository import UserRepository
+from app.repositories.task_repository import TaskRepository
 
 
 async def main():
@@ -18,9 +17,7 @@ async def main():
         )
 
         task = await repo2.create(
-            title="good title",
-            description="hihiihiihi",
-            status = "Not Started"
+            title="good title", description="hihiihiihi", status="Not Started"
         )
 
         task.assignees.append(user)
@@ -29,5 +26,6 @@ async def main():
         task = await repo2.get_by_id(task.id)
 
         print(task.assignees)
+
 
 asyncio.run(main())

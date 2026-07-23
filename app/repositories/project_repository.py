@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models.project import Project
+from app.db.models.project import Project
 
 
 class ProjectRepository:

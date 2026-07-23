@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models.comment import Comment
+from app.db.models.comment import Comment
 
 
 class CommentRepository:
@@ -27,9 +27,7 @@ class CommentRepository:
         return comment
 
     async def get_by_id(self, comment_id: int) -> Comment | None:
-        result = await self.db.execute(
-            select(Comment).where(Comment.id == comment_id)
-        )
+        result = await self.db.execute(select(Comment).where(Comment.id == comment_id))
         return result.scalar_one_or_none()
 
     async def get_all(
@@ -37,11 +35,7 @@ class CommentRepository:
         skip: int = 0,
         limit: int = 100,
     ) -> list[Comment]:
-        result = await self.db.execute(
-            select(Comment)
-            .offset(skip)
-            .limit(limit)
-        )
+        result = await self.db.execute(select(Comment).offset(skip).limit(limit))
         return result.scalars().all()
 
     async def get_by_task(

@@ -2,8 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.models.task import Task
-from db.enums import TaskStatus
+from app.db.models.task import Task
+from app.db.enums import TaskStatus
 
 
 class TaskRepository:
@@ -20,7 +20,7 @@ class TaskRepository:
         task = Task(
             title=title,
             description=description,
-            project_id = project_id,
+            project_id=project_id,
             status=status,
         )
 

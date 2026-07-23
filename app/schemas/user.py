@@ -3,9 +3,9 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from schemas.project import ProjectResponse
-    from schemas.task import TaskResponse
-    from schemas.comment import CommentResponse
+    from app.schemas.project import ProjectResponse
+    from app.schemas.task import TaskResponse
+    from app.schemas.comment import CommentResponse
 
 
 class UserBase(BaseModel):

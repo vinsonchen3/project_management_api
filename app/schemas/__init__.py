@@ -1,7 +1,7 @@
-from schemas.user import *
-from schemas.project import *
-from schemas.task import *
-from schemas.comment import *
+from app.schemas.user import *
+from app.schemas.project import *
+from app.schemas.task import *
+from app.schemas.comment import *
 
 UserDetailed.model_rebuild()
 ProjectDetailed.model_rebuild()

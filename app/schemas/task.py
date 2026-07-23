@@ -4,9 +4,9 @@ from db.enums import TaskStatus
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from schemas.user import UserResponse
-    from schemas.project import ProjectResponse
-    from schemas.comment import CommentResponse
+    from app.schemas.user import UserResponse
+    from app.schemas.project import ProjectResponse
+    from app.schemas.comment import CommentResponse
 
 
 class TaskBase(BaseModel):

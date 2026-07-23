@@ -2,8 +2,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from schemas.user import UserResponse
-    from schemas.task import TaskResponse
+    from app.schemas.user import UserResponse
+    from app.schemas.task import TaskResponse
 
 
 class ProjectBase(BaseModel):

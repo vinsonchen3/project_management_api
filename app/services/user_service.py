@@ -4,7 +4,7 @@ from app.core.exceptions import (
     DuplicateEmailError,
     DuplicateUsernameError,
 )
-from db.models.user import User
+from app.db.models.user import User
 
 
 class UserService:
