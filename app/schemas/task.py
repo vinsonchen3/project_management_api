@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from typing import List
-from db.enums import TaskStatus
+from app.db.enums import TaskStatus
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
