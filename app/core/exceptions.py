@@ -15,3 +15,6 @@ class DuplicateEmailError(Exception):
 
 class DuplicateUsernameError(Exception):
     pass
+
+class InvalidToken(Exception):
+    pass
