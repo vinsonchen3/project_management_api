@@ -5,6 +5,7 @@ from app.core.exceptions import (
     DuplicateUsernameError,
 )
 from app.db.models.user import User
+from app.auth.hashing import hash_password
 
 
 class UserService:
@@ -26,7 +27,7 @@ class UserService:
         return await self.user_repo.create(
             username=username,
             email=email,
-            hashed_password=password,  # TODO: fix this method with hash(password) when i add auth
+            hashed_password=hash_password(password), 
         )
 
     async def get_user(self, user_id: int) -> User:
