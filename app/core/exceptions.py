@@ -18,3 +18,6 @@ class DuplicateUsernameError(Exception):
 
 class InvalidToken(Exception):
     pass
+
+class InvalidCredentials(Exception):
+    pass

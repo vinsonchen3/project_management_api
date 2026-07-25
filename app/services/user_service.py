@@ -27,7 +27,7 @@ class UserService:
         return await self.user_repo.create(
             username=username,
             email=email,
-            hashed_password=hash_password(password), 
+            hashed_password=hash_password(password),
         )
 
     async def get_user(self, user_id: int) -> User:
@@ -37,6 +37,9 @@ class UserService:
             raise UserNotFoundError()
 
         return user
+
+    async def get_user_by_email(self, email: str) -> User | None:
+        return await self.user_repo.get_by_email(email)
 
     async def get_users(
         self,
@@ -76,6 +79,15 @@ class UserService:
             # TODO: Replace with hash_password(password)
             user.hashed_password = password
 
+        return await self.user_repo.update(user)
+
+    async def update_password(
+        self,
+        user_id: int,
+        hashed_password: str,
+    ) -> User:
+        user = await self.get_user(user_id)
+        user.hashed_password = hashed_password
         return await self.user_repo.update(user)
 
     async def delete_user(self, user_id: int) -> None:
