@@ -101,9 +101,9 @@ CommentServiceDep = Annotated[
 
 
 def get_auth_service(
-    db: DBSession,
+    user_service: UserServiceDep,
 ) -> AuthService:
-    return AuthService(get_user_service(db))
+    return AuthService(user_service)
 
 
 AuthServiceDep = Annotated[
