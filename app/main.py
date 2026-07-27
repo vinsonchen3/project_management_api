@@ -4,10 +4,12 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("starting app")
     yield
+    print("shutting down app")
 
 
-app = FastAPI(title="Project Management API")
+app = FastAPI(lifespan=lifespan, title="Project Management API")
 
 # add routers here
 
