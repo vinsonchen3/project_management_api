@@ -53,47 +53,38 @@ class UserService:
 
     async def update_user(
         self,
-        user_id: int,
+        current_user: User,
         username: str | None = None,
         email: str | None = None,
         password: str | None = None,
     ) -> User:
-        user = await self.user_repo.get_by_id(user_id)
-
-        if user is None:
-            raise UserNotFoundError()
-
         if username is not None:
             existing = await self.user_repo.get_by_username(username)
-            if existing is not None and existing.id != user.id:
+            if existing is not None and existing.id != current_user.id:
                 raise DuplicateUsernameError()
-            user.username = username
+            current_user.username = username
 
         if email is not None:
             existing = await self.user_repo.get_by_email(email)
-            if existing is not None and existing.id != user.id:
+            if existing is not None and existing.id != current_user.id:
                 raise DuplicateEmailError()
-            user.email = email
+            current_user.email = email
 
         if password is not None:
-            # TODO: Replace with hash_password(password)
-            user.hashed_password = password
+            current_user.hashed_password = hash_password(password)
 
-        return await self.user_repo.update(user)
+        return await self.user_repo.update(current_user)
 
     async def update_password(
         self,
-        user_id: int,
-        hashed_password: str,
+        current_user: User,
+        password: str,
     ) -> User:
-        user = await self.get_user(user_id)
-        user.hashed_password = hashed_password
-        return await self.user_repo.update(user)
+        current_user.hashed_password = hash_password(password)
+        return await self.user_repo.update(current_user)
 
-    async def delete_user(self, user_id: int) -> None:
-        user = await self.user_repo.get_by_id(user_id)
-
-        if user is None:
-            raise UserNotFoundError()
-
-        await self.user_repo.delete(user)
+    async def delete_user(
+        self,
+        current_user: User,
+    ) -> None:
+        await self.user_repo.delete(current_user)

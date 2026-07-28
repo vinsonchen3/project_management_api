@@ -21,3 +21,6 @@ class InvalidToken(Exception):
 
 class InvalidCredentials(Exception):
     pass
+
+class PermissionDeniedError(Exception):
+    pass
