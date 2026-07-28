@@ -48,7 +48,7 @@ class UserRepository:
         return await self.get_by_username(username) is not None
 
     async def exists_by_email(self, email: str) -> bool:
-        return await self.get_by_email(email)
+        return await self.get_by_email(email) is not None
 
     async def get_by_id_with_tasks(self, user_id: int) -> User | None:
         result = await self.db.execute(
