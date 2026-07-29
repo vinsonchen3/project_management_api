@@ -1,6 +1,7 @@
 from app.core.exceptions import (
     ProjectNotFoundError,
     UserNotFoundError,
+    PermissionDeniedError,
 )
 
 from app.repositories.project_repository import ProjectRepository
@@ -22,33 +23,33 @@ class ProjectService:
 
     async def create_project(
         self,
+        current_user: User,
         name: str,
         description: str | None,
-        owner_id: int,
     ) -> Project:
-        owner = await self.user_repo.get_by_id(owner_id)
-
-        if owner is None:
-            raise UserNotFoundError()
-
         return await self.project_repo.create(
             name=name,
             description=description,
-            owner_id=owner_id,
+            owner=current_user,
         )
 
     async def get_project(
         self,
+        current_user: User,
         project_id: int,
     ) -> Project:
         project = await self.project_repo.get_by_id_detailed(project_id)
+
         if project is None:
             raise ProjectNotFoundError()
+
+        await self._require_project_member(project, current_user)
 
         return project
 
     async def delete_project(
         self,
+        current_user: User,
         project_id: int,
     ) -> None:
         project = await self.project_repo.get_by_id(project_id)
@@ -56,10 +57,13 @@ class ProjectService:
         if project is None:
             raise ProjectNotFoundError()
 
+        await self._require_project_owner(project, current_user)
+
         await self.project_repo.delete(project)
 
     async def rename_project(
         self,
+        current_user: User,
         project_id: int,
         name: str,
     ) -> Project:
@@ -68,12 +72,15 @@ class ProjectService:
         if project is None:
             raise ProjectNotFoundError()
 
+        await self._require_project_owner(project, current_user)
+
         project.name = name
 
         return await self.project_repo.update(project)
 
     async def update_description(
         self,
+        current_user: User,
         project_id: int,
         description: str | None,
     ) -> Project:
@@ -82,18 +89,23 @@ class ProjectService:
         if project is None:
             raise ProjectNotFoundError()
 
+        await self._require_project_owner(project, current_user)
+
         project.description = description
 
         return await self.project_repo.update(project)
 
     async def add_member(
         self,
+        current_user: User,
         project_id: int,
         user_id: int,
     ) -> Project:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
             raise ProjectNotFoundError()
+
+        await self._require_project_owner(project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
@@ -106,12 +118,15 @@ class ProjectService:
 
     async def remove_member(
         self,
+        current_user: User,
         project_id: int,
         user_id: int,
     ) -> Project:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
             raise ProjectNotFoundError()
+
+        await self._require_project_owner(project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
@@ -124,20 +139,42 @@ class ProjectService:
 
     async def get_members(
         self,
+        current_user: User,
         project_id: int,
     ) -> list[User]:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
             raise ProjectNotFoundError()
 
+        await self._require_project_member(project, current_user)
+
         return project.members
 
     async def get_tasks(
         self,
+        current_user: User,
         project_id: int,
     ) -> list[Task]:
         project = await self.project_repo.get_by_id_detailed(project_id)
         if project is None:
             raise ProjectNotFoundError()
 
+        await self._require_project_member(project, current_user)
+
         return project.tasks
+
+    async def _require_project_member(
+        self,
+        project: Project,
+        current_user: User,
+    ) -> None:
+        if project.owner_id != current_user.id and current_user not in project.members:
+            raise PermissionDeniedError()
+
+    async def _require_project_owner(
+        self,
+        project: Project,
+        current_user: User,
+    ) -> None:
+        if project.owner_id != current_user.id:
+            raise PermissionDeniedError()

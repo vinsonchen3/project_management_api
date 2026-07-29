@@ -3,6 +3,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.project import Project
+from app.db.models.user import User
 
 
 class ProjectRepository:
@@ -14,13 +15,16 @@ class ProjectRepository:
         *,
         name: str,
         description: str | None,
-        owner_id: int,
+        owner: User,
     ) -> Project:
         project = Project(
             name=name,
             description=description,
-            owner_id=owner_id,
+            owner_id=owner.id,
         )
+
+        project.members.append(owner)
+
         self.db.add(project)
         await self.db.flush()
         return project
