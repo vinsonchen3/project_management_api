@@ -3,6 +3,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.task import Task
+from app.db.models.project import Project
 from app.db.enums import TaskStatus
 
 
@@ -62,6 +63,15 @@ class TaskRepository:
             )
             .where(Task.id == task_id)
         )
+        return result.scalar_one_or_none()
+
+    async def get_by_id_for_authorization(self, task_id: int) -> Task | None:
+        result = await self.db.execute(
+            select(Task)
+            .options(selectinload(Task.project).selectinload(Project.members))
+            .where(Task.id == task_id)
+        )
+
         return result.scalar_one_or_none()
 
     async def update(self, task: Task) -> Task:
