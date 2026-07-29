@@ -24,3 +24,6 @@ class InvalidCredentials(Exception):
 
 class PermissionDeniedError(Exception):
     pass
+
+class UserNotInProjectError(Exception):
+    pass

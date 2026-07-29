@@ -57,7 +57,7 @@ class TaskRepository:
         result = await self.db.execute(
             select(Task)
             .options(
-                selectinload(Task.project),
+                selectinload(Task.project).selectinload(Project.members),
                 selectinload(Task.assignees),
                 selectinload(Task.comments),
             )
@@ -65,7 +65,22 @@ class TaskRepository:
         )
         return result.scalar_one_or_none()
 
-    async def get_by_id_for_authorization(self, task_id: int) -> Task | None:
+    async def get_by_id_with_assignees(
+        self,
+        task_id: int,
+    ) -> Task | None:
+        result = await self.db.execute(
+            select(Task)
+            .options(
+                selectinload(Task.project).selectinload(Project.members),
+                selectinload(Task.assignees),
+            )
+            .where(Task.id == task_id)
+        )
+
+        return result.scalar_one_or_none()
+
+    async def get_by_id_with_project_members(self, task_id: int) -> Task | None:
         result = await self.db.execute(
             select(Task)
             .options(selectinload(Task.project).selectinload(Project.members))
