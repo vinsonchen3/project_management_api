@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.auth_service import AuthService
-from app.auth.dependencies import CurrentUser
+
 from app.db.database import get_db
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.user_repository import UserRepository
 from app.repositories.project_repository import ProjectRepository
@@ -35,7 +35,9 @@ DBSession = Annotated[
 def get_user_service(
     db: DBSession,
 ) -> UserService:
-    return UserService(UserRepository(db))
+    return UserService(
+        UserRepository(db),
+    )
 
 
 UserServiceDep = Annotated[
@@ -52,7 +54,10 @@ UserServiceDep = Annotated[
 def get_project_service(
     db: DBSession,
 ) -> ProjectService:
-    return ProjectService(ProjectRepository(db))
+    return ProjectService(
+        ProjectRepository(db),
+        UserRepository(db),
+    )
 
 
 ProjectServiceDep = Annotated[
@@ -69,7 +74,11 @@ ProjectServiceDep = Annotated[
 def get_task_service(
     db: DBSession,
 ) -> TaskService:
-    return TaskService(TaskRepository(db))
+    return TaskService(
+        TaskRepository(db),
+        ProjectRepository(db),
+        UserRepository(db),
+    )
 
 
 TaskServiceDep = Annotated[
@@ -86,7 +95,10 @@ TaskServiceDep = Annotated[
 def get_comment_service(
     db: DBSession,
 ) -> CommentService:
-    return CommentService(CommentRepository(db))
+    return CommentService(
+        CommentRepository(db),
+        TaskRepository(db),
+    )
 
 
 CommentServiceDep = Annotated[
