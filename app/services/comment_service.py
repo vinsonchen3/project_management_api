@@ -5,179 +5,140 @@ from app.repositories.task_repository import TaskRepository
 from app.repositories.user_repository import UserRepository
 
 from app.db.models.comment import Comment
+from app.db.models.project import Project
+from app.db.models.user import User
 
 from app.core.exceptions import (
     CommentNotFoundError,
     TaskNotFoundError,
     UserNotFoundError,
+    PermissionDeniedError,
 )
 
 
 class CommentService:
     def __init__(
         self,
-        db: AsyncSession,
+        comment_repo: CommentRepository,
+        task_repo: TaskRepository,
     ):
-        self.comment_repository = CommentRepository(db)
-        self.task_repository = TaskRepository(db)
-        self.user_repository = UserRepository(db)
-
+        self.comment_repo = comment_repo
+        self.task_repo = task_repo
 
     async def create_comment(
         self,
+        current_user: User,
         content: str,
-        author_id: int,
         task_id: int,
     ) -> Comment:
+        task = await self.task_repo.get_by_id_with_project_members(task_id)
 
-        # Verify author exists
-        author = await self.user_repository.get_by_id(author_id)
-
-        if not author:
-            raise UserNotFoundError()
-
-
-        # Verify task exists
-        task = await self.task_repository.get_by_id(task_id)
-
-        if not task:
+        if task is None:
             raise TaskNotFoundError()
 
+        await self._require_project_member(task.project, current_user)
 
-        return await self.comment_repository.create(
+        return await self.comment_repo.create(
             content=content,
-            author_id=author_id,
+            author_id=current_user.id,
             task_id=task_id,
         )
 
-
     async def get_comment(
         self,
+        current_user: User,
         comment_id: int,
     ) -> Comment:
-
-        comment = await self.comment_repository.get_by_id(
+        comment = await self.comment_repo.get_by_id_with_task_project_members(
             comment_id
         )
 
-        if not comment:
+        if comment is None:
             raise CommentNotFoundError()
 
-        return comment
+        await self._require_project_member(comment.task.project, current_user)
 
+        return comment
 
     async def get_comment_detailed(
         self,
+        current_user: User,
         comment_id: int,
     ) -> Comment:
+        comment = await self.comment_repo.get_by_id_detailed(comment_id)
 
-        comment = await self.comment_repository.get_by_id_with_author(
-            comment_id
-        )
-
-        if not comment:
+        if comment is None:
             raise CommentNotFoundError()
+
+        await self._require_project_member(comment.task.project, current_user)
 
         return comment
 
-
     async def get_task_comments(
         self,
+        current_user: User,
         task_id: int,
     ) -> list[Comment]:
+        task = await self.task_repo.get_by_id_with_project_members(task_id)
 
-        # Make sure task exists
-        task = await self.task_repository.get_by_id(task_id)
-
-        if not task:
+        if task is None:
             raise TaskNotFoundError()
 
+        await self._require_project_member(task.project, current_user)
 
-        return await self.comment_repository.get_task_comments(
-            task_id
-        )
-
+        return await self.comment_repo.get_task_comments(task_id)
 
     async def get_task_comments_detailed(
         self,
+        current_user: User,
         task_id: int,
     ) -> list[Comment]:
+        task = await self.task_repo.get_by_id_with_project_members(task_id)
 
-        task = await self.task_repository.get_by_id(task_id)
-
-        if not task:
+        if task is None:
             raise TaskNotFoundError()
 
+        await self._require_project_member(task.project, current_user)
 
-        return await self.comment_repository.get_task_comments_with_authors(
-            task_id
-        )
-
-
-    async def get_user_comments(
-        self,
-        user_id: int,
-    ) -> list[Comment]:
-
-        user = await self.user_repository.get_by_id(user_id)
-
-        if not user:
-            raise UserNotFoundError()
-
-
-        return await self.comment_repository.get_by_author(
-            user_id
-        )
-
+        return await self.comment_repo.get_task_comments_with_authors(task_id)
 
     async def update_comment(
         self,
+        current_user: User,
         comment_id: int,
         content: str,
-        user_id: int,
     ) -> Comment:
+        comment = await self.comment_repo.get_by_id(comment_id)
 
-        comment = await self.comment_repository.get_by_id(
-            comment_id
-        )
-
-        if not comment:
+        if comment is None:
             raise CommentNotFoundError()
 
-
-        # Authorization check
-        if comment.author_id != user_id:
-            raise PermissionError(
-                "You cannot edit this comment"
-            )
-
+        if comment.author_id != current_user.id:
+            raise PermissionDeniedError()
 
         comment.content = content
 
-        return await self.comment_repository.update(
-            comment
-        )
-
+        return await self.comment_repo.update(comment)
 
     async def delete_comment(
         self,
+        current_user: User,
         comment_id: int,
-        user_id: int,
     ) -> None:
+        comment = await self.comment_repo.get_by_id(comment_id)
 
-        comment = await self.comment_repository.get_by_id(
-            comment_id
-        )
-
-        if not comment:
+        if comment is None:
             raise CommentNotFoundError()
 
+        if comment.author_id != current_user.id:
+            raise PermissionDeniedError()
 
-        # Authorization check
-        if comment.author_id != user_id:
-            raise PermissionError(
-                "You cannot delete this comment"
-            )
+        await self.comment_repo.delete(comment)
 
-
-        await self.comment_repository.delete(comment)
+    async def _require_project_member(
+        self,
+        project: Project,
+        current_user: User,
+    ) -> None:
+        if project.owner_id != current_user.id and current_user not in project.members:
+            raise PermissionDeniedError()

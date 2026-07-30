@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.db.models.comment import Comment
+from app.db.models.project import Project 
+from app.db.models.task import Task
 
 
 class CommentRepository:
@@ -82,6 +84,39 @@ class CommentRepository:
             select(Comment).where(Comment.author_id == author_id)
         )
         return result.scalars().all()
+
+    async def get_by_id_with_task_project_members(
+        self,
+        comment_id: int,
+    ) -> Comment | None:
+        result = await self.db.execute(
+            select(Comment)
+            .options(
+                selectinload(Comment.task)
+                .selectinload(Task.project)
+                .selectinload(Project.members)
+            )
+            .where(Comment.id == comment_id)
+        )
+
+        return result.scalar_one_or_none()
+
+    async def get_by_id_detailed(
+        self,
+        comment_id: int,
+    ) -> Comment | None:
+        result = await self.db.execute(
+            select(Comment)
+            .options(
+                selectinload(Comment.author),
+                selectinload(Comment.task)
+                .selectinload(Task.project)
+                .selectinload(Project.members),
+            )
+            .where(Comment.id == comment_id)
+        )
+
+        return result.scalar_one_or_none()
 
     async def update(self, comment: Comment) -> Comment:
         await self.db.flush()
