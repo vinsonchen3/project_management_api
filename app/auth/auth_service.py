@@ -3,6 +3,7 @@ from app.auth.hashing import hash_password, verify_password
 from app.auth.jwt import create_access_token, decode_access_token
 from app.core.exceptions import UserNotFoundError
 from app.services.user_service import UserService
+from app.db.models import User
 
 
 class AuthService:
@@ -64,18 +65,16 @@ class AuthService:
 
     async def change_password(
         self,
-        user_id: int,
+        current_user: User,
         current_password: str,
         new_password: str,
     ):
-        user = await self.user_service.get_user(user_id)
-
         if not verify_password(
             current_password,
-            user.hashed_password,
+            current_user.hashed_password,
         ):
             raise InvalidCredentials()
 
-        user.hashed_password = hash_password(new_password)
+        current_user.hashed_password = hash_password(new_password)
 
-        return await self.user_service.user_repo.update(user)
+        return await self.user_service.user_repo.update(current_user)
