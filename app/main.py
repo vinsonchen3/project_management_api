@@ -5,6 +5,7 @@ from sqlalchemy import text
 
 from app.db.database import engine
 from app.api.v1.auth import router as auth_router
+from app.api.v1.users import router as user_router
 
 
 @asynccontextmanager
@@ -20,6 +21,7 @@ app = FastAPI(lifespan=lifespan, title="Project Management API")
 
 # add routers here
 app.include_router(auth_router, prefix="/api/v1")
+app.include_router(user_router, prefix="/api/v1")
 
 
 @app.get("/")

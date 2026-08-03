@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.schemas.auth import LoginRequest, TokenResponse
 from app.schemas.user import UserCreate, UserResponse
@@ -34,5 +35,20 @@ async def login(
 ):
     token = await auth_service.login(
         email=user_credentials.email, password=user_credentials.password
+    )
+    return TokenResponse(access_token=token)
+
+
+@router.post(
+    "/token",
+    response_model=TokenResponse,
+)
+async def login_for_swagger(
+    auth_service: AuthServiceDep,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    token = await auth_service.login(
+        email=form_data.username,
+        password=form_data.password,
     )
     return TokenResponse(access_token=token)
