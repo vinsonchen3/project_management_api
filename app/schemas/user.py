@@ -28,7 +28,7 @@ class UserResponse(BaseModel):
 class UserUpdate(BaseModel):
     username: str | None = None
     email: EmailStr | None = None
-    password: str | None = Field(default=None, min_length=8)
+    # password: str | None = Field(default=None, min_length=8)
 
 
 class UserDetailed(UserResponse):
