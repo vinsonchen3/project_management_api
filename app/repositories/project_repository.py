@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -83,6 +83,15 @@ class ProjectRepository:
         )
 
         return result.scalar_one_or_none()
+
+    async def get_for_user(
+        self,
+        user_id: int,
+    ) -> list[Project]:
+        result = await self.db.execute(
+            select(Project).where(Project.members.any(User.id == user_id))
+        )
+        return result.scalars().all()
 
     async def update(
         self,

@@ -47,6 +47,12 @@ class ProjectService:
 
         return project
 
+    async def get_projects(
+        self,
+        current_user: User,
+    ) -> list[Project]:
+        return await self.project_repo.get_for_user(current_user.id)
+
     async def delete_project(
         self,
         current_user: User,
@@ -172,7 +178,7 @@ class ProjectService:
         project: Project,
         current_user: User,
     ) -> None:
-        if project.owner_id != current_user.id and current_user not in project.members:
+        if current_user not in project.members:
             raise PermissionDeniedError()
 
     async def _require_project_owner(
