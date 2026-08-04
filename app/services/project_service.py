@@ -61,27 +61,11 @@ class ProjectService:
 
         await self.project_repo.delete(project)
 
-    async def rename_project(
+    async def update_project(
         self,
         current_user: User,
         project_id: int,
-        name: str,
-    ) -> Project:
-        project = await self.project_repo.get_by_id(project_id)
-
-        if project is None:
-            raise ProjectNotFoundError()
-
-        await self._require_project_owner(project, current_user)
-
-        project.name = name
-
-        return await self.project_repo.update(project)
-
-    async def update_description(
-        self,
-        current_user: User,
-        project_id: int,
+        name: str | None,
         description: str | None,
     ) -> Project:
         project = await self.project_repo.get_by_id(project_id)
@@ -91,7 +75,11 @@ class ProjectService:
 
         await self._require_project_owner(project, current_user)
 
-        project.description = description
+        if name is not None:
+            project.name = name
+
+        if description is not None:
+            project.description = description
 
         return await self.project_repo.update(project)
 
@@ -136,6 +124,22 @@ class ProjectService:
             project.members.remove(user)
 
         return await self.project_repo.update(project)
+
+    async def leave_project(
+        self,
+        current_user: User,
+        project_id: int,
+    ) -> None:
+        project = await self.project_repo.get_by_id_with_members(project_id)
+        if project is None:
+            raise ProjectNotFoundError()
+
+        if project.owner_id == current_user.id:
+            raise PermissionDeniedError("Project owner cannot leave project")
+
+        if current_user in project.members:
+            project.members.remove(current_user)
+        await self.project_repo.update(project)
 
     async def get_members(
         self,

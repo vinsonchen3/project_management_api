@@ -22,6 +22,15 @@ class ProjectResponse(ProjectBase):
     owner_id: int
 
 
+class ProjectUpdate(BaseModel):
+    name: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=150,
+    )
+    description: str | None = None
+
+
 class ProjectDetailed(ProjectResponse):
     owner: "UserResponse"
     members: list["UserResponse"] = Field(default_factory=list)
