@@ -109,7 +109,7 @@ class TaskService:
             raise UserNotFoundError()
 
         if user not in task.project.members:
-            raise UserNotInProjectError
+            raise UserNotInProjectError()
 
         if user not in task.assignees:
             task.assignees.append(user)
