@@ -152,3 +152,18 @@ async def leave_project(
         current_user=current_user,
         project_id=project_id,
     )
+
+
+@router.get(
+    "/{project_id}/tasks",
+    response_model=list[TaskResponse],
+)
+async def get_tasks(
+    project_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    return await project_service.get_tasks(
+        current_user=current_user,
+        project_id=project_id,
+    )
