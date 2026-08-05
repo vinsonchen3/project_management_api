@@ -19,6 +19,12 @@ class TaskCreate(TaskBase):
     project_id: int
 
 
+class TaskUpdate(BaseModel):
+    title: str | None = Field(default=None, max_length=250)
+    description: str | None = None
+    status: TaskStatus | None = None
+
+
 class TaskResponse(TaskBase):
     model_config = ConfigDict(from_attributes=True)
 
