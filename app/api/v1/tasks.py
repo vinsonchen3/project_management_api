@@ -81,3 +81,52 @@ async def delete_task(
         current_user=current_user,
         task_id=task_id,
     )
+
+
+@router.post(
+    "/{task_id}/assignees",
+    response_model=TaskResponse,
+)
+async def assign_user(
+    task_id: int,
+    assignment: TaskAssignment,
+    current_user: CurrentUser,
+    task_service: TaskServiceDep,
+):
+    return await task_service.assign_user(
+        current_user=current_user,
+        task_id=task_id,
+        user_id=assignment.user_id,
+    )
+
+
+@router.delete(
+    "/{task_id}/assignees/{user_id}",
+    response_model=TaskResponse,
+)
+async def remove_assignee(
+    task_id: int,
+    user_id: int,
+    current_user: CurrentUser,
+    task_service: TaskServiceDep,
+):
+    return await task_service.remove_assignee(
+        current_user=current_user,
+        task_id=task_id,
+        user_id=user_id,
+    )
+
+
+@router.get(
+    "/{task_id}/comments",
+    response_model=list[CommentResponse],
+)
+async def get_comments(
+    task_id: int,
+    current_user: CurrentUserDep,
+    task_service: TaskServiceDep,
+):
+    return await task_service.get_comments(
+        current_user=current_user,
+        task_id=task_id,
+    )
