@@ -4,10 +4,8 @@ from app.auth.dependencies import CurrentUser
 from app.dependencies import CommentServiceDep
 
 from app.schemas.comment import (
-    CommentCreate,
     CommentUpdate,
     CommentResponse,
-    CommentDetailed,
 )
 
 router = APIRouter(prefix="/comments", tags=["Comments"])
@@ -46,7 +44,7 @@ async def update_comment(
 
 
 @router.delete(
-    "/comments/{comment_id}",
+    "/{comment_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_comment(

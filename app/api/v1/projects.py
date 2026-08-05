@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from app.auth.dependencies import CurrentUser
-from app.dependencies import ProjectServiceDep
+from app.dependencies import ProjectServiceDep, TaskServiceDep
 from app.schemas.project import (
     ProjectCreate,
     ProjectUpdate,
@@ -9,7 +9,7 @@ from app.schemas.project import (
     ProjectDetailed,
 )
 from app.schemas.user import UserResponse
-from app.schemas.task import TaskResponse
+from app.schemas.task import TaskResponse, TaskCreate
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
@@ -151,6 +151,26 @@ async def leave_project(
     await project_service.leave_project(
         current_user=current_user,
         project_id=project_id,
+    )
+
+
+@router.post(
+    "/{project_id}/tasks",
+    response_model=TaskResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_task(
+    project_id: int,
+    task: TaskCreate,
+    current_user: CurrentUser,
+    task_service: TaskServiceDep,
+):
+    return await task_service.create_task(
+        current_user=current_user,
+        title=task.title,
+        description=task.description,
+        project_id=project_id,
+        status=task.status,
     )
 
 
