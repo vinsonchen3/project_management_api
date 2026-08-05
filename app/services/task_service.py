@@ -56,6 +56,7 @@ class TaskService:
         task_id: int,
         title: str | None = None,
         description: str | None = None,
+        status: TaskStatus | None = None,
     ) -> Task:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
@@ -69,6 +70,9 @@ class TaskService:
 
         if description is not None:
             task.description = description
+
+        if status is not None:
+            task.status = status
 
         return await self.task_repo.update(task)
 
@@ -132,23 +136,6 @@ class TaskService:
 
         if user in task.assignees:
             task.assignees.remove(user)
-
-        return await self.task_repo.update(task)
-
-    async def change_status(
-        self,
-        current_user: User,
-        task_id: int,
-        status: TaskStatus,
-    ) -> Task:
-        task = await self.task_repo.get_by_id_with_project_members(task_id)
-
-        if task is None:
-            raise TaskNotFoundError()
-
-        await self._require_project_member(task.project, current_user)
-
-        task.status = status
 
         return await self.task_repo.update(task)
 

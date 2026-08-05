@@ -32,6 +32,10 @@ class TaskResponse(TaskBase):
     project_id: int
 
 
+class TaskAssignment(BaseModel):
+    user_id: int
+
+
 class TaskDetailed(TaskResponse):
     assignees: List["UserResponse"] = Field(default_factory=list)
     comments: List["CommentResponse"] = Field(default_factory=list)
