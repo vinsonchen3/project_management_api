@@ -56,6 +56,7 @@ async def get_project(
         project_id=project_id,
     )
 
+
 @router.patch(
     "/{project_id}",
     response_model=ProjectResponse,
@@ -84,6 +85,70 @@ async def delete_project(
     project_service: ProjectServiceDep,
 ):
     await project_service.delete_project(
+        current_user=current_user,
+        project_id=project_id,
+    )
+
+
+@router.get(
+    "/{project_id}/members",
+    response_model=list[UserResponse],
+)
+async def get_members(
+    project_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    return await project_service.get_members(
+        current_user=current_user,
+        project_id=project_id,
+    )
+
+
+@router.post(
+    "/{project_id}/members",
+    response_model=ProjectResponse,
+)
+async def add_member(  # for add_member because i have request as a query parameter i need to send it in the frontend
+    project_id: int,
+    user_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    return await project_service.add_member(
+        current_user=current_user,
+        project_id=project_id,
+        user_id=user_id,
+    )
+
+
+@router.delete(
+    "/{project_id}/members/{user_id}",
+    response_model=ProjectResponse,
+)
+async def remove_member(
+    project_id: int,
+    user_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    return await project_service.remove_member(
+        current_user=current_user,
+        project_id=project_id,
+        user_id=user_id,
+    )
+
+
+@router.delete(
+    "/{project_id}/members/me",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def leave_project(
+    project_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    await project_service.leave_project(
         current_user=current_user,
         project_id=project_id,
     )
