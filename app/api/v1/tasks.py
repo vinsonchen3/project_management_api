@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from app.auth.dependencies import CurrentUser
-from app.dependencies import TaskServiceDep
+from app.dependencies import TaskServiceDep, CommentServiceDep
 
 from app.schemas.task import (
     TaskCreate,
@@ -10,7 +10,7 @@ from app.schemas.task import (
     TaskResponse,
     TaskDetailed,
 )
-from app.schemas.comment import CommentResponse
+from app.schemas.comment import CommentResponse, CommentCreate
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -123,10 +123,28 @@ async def remove_assignee(
 )
 async def get_comments(
     task_id: int,
-    current_user: CurrentUserDep,
+    current_user: CurrentUser,
     task_service: TaskServiceDep,
 ):
     return await task_service.get_comments(
         current_user=current_user,
+        task_id=task_id,
+    )
+
+
+@router.post(
+    "/{task_id}/comments",
+    response_model=CommentResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_comment(
+    task_id: int,
+    comment: CommentCreate,
+    current_user: CurrentUser,
+    comment_service: CommentServiceDep,
+):
+    return await comment_service.create_comment(
+        current_user=current_user,
+        content=comment.content,
         task_id=task_id,
     )

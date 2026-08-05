@@ -108,10 +108,14 @@ class CommentService:
         comment_id: int,
         content: str,
     ) -> Comment:
-        comment = await self.comment_repo.get_by_id(comment_id)
+        comment = await self.comment_repo.get_by_id_with_task_project_members(
+            comment_id
+        )
 
         if comment is None:
             raise CommentNotFoundError()
+
+        await self._require_project_member(comment.task.project, current_user)
 
         if comment.author_id != current_user.id:
             raise PermissionDeniedError()
@@ -125,10 +129,14 @@ class CommentService:
         current_user: User,
         comment_id: int,
     ) -> None:
-        comment = await self.comment_repo.get_by_id(comment_id)
+        comment = await self.comment_repo.get_by_id_with_task_project_members(
+            comment_id
+        )
 
         if comment is None:
             raise CommentNotFoundError()
+
+        await self._require_project_member(comment.task.project, current_user)
 
         if comment.author_id != current_user.id:
             raise PermissionDeniedError()

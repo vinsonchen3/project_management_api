@@ -11,7 +11,7 @@ class CommentBase(BaseModel):
 
 
 class CommentCreate(CommentBase):
-    task_id: int
+    pass
 
 
 class CommentUpdate(BaseModel):
