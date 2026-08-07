@@ -34,7 +34,7 @@ class CommentService:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -54,7 +54,7 @@ class CommentService:
         )
 
         if comment is None:
-            raise CommentNotFoundError()
+            raise CommentNotFoundError(comment_id=comment_id)
 
         await self._require_project_member(comment.task.project, current_user)
 
@@ -68,7 +68,7 @@ class CommentService:
         comment = await self.comment_repo.get_by_id_detailed(comment_id)
 
         if comment is None:
-            raise CommentNotFoundError()
+            raise CommentNotFoundError(comment_id=comment_id)
 
         await self._require_project_member(comment.task.project, current_user)
 
@@ -82,7 +82,7 @@ class CommentService:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -96,7 +96,7 @@ class CommentService:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -113,7 +113,7 @@ class CommentService:
         )
 
         if comment is None:
-            raise CommentNotFoundError()
+            raise CommentNotFoundError(comment_id=comment_id)
 
         await self._require_project_member(comment.task.project, current_user)
 
@@ -134,7 +134,7 @@ class CommentService:
         )
 
         if comment is None:
-            raise CommentNotFoundError()
+            raise CommentNotFoundError(comment_id=comment_id)
 
         await self._require_project_member(comment.task.project, current_user)
 

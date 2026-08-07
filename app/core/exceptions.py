@@ -81,8 +81,8 @@ class PermissionDeniedError(APIException):
 
 
 class UserNotInProjectError(APIException):
-    def __init__(self, user_id: int, project_id: int):
+    def __init__(self, user_id: int):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            message=f"User {user_id} is not a member of project {project_id}.",
+            message=f"User {user_id} is not a member of this project.",
         )

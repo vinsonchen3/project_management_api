@@ -41,7 +41,7 @@ class ProjectService:
         project = await self.project_repo.get_by_id_detailed(project_id)
 
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_member(project, current_user)
 
@@ -61,7 +61,7 @@ class ProjectService:
         project = await self.project_repo.get_by_id(project_id)
 
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_owner(project, current_user)
 
@@ -77,7 +77,7 @@ class ProjectService:
         project = await self.project_repo.get_by_id(project_id)
 
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_owner(project, current_user)
 
@@ -97,13 +97,13 @@ class ProjectService:
     ) -> Project:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_owner(project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id=user_id)
 
         if user not in project.members:
             project.members.append(user)
@@ -118,13 +118,13 @@ class ProjectService:
     ) -> Project:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_owner(project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id=user_id)
 
         if user in project.members:
             project.members.remove(user)
@@ -138,7 +138,7 @@ class ProjectService:
     ) -> None:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         if project.owner_id == current_user.id:
             raise PermissionDeniedError("Project owner cannot leave project")
@@ -154,7 +154,7 @@ class ProjectService:
     ) -> list[User]:
         project = await self.project_repo.get_by_id_with_members(project_id)
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_member(project, current_user)
 
@@ -167,7 +167,7 @@ class ProjectService:
     ) -> list[Task]:
         project = await self.project_repo.get_by_id_detailed(project_id)
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_member(project, current_user)
 

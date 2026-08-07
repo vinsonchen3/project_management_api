@@ -19,10 +19,10 @@ class UserService:
         password: str,
     ) -> User:
         if await self.user_repo.exists_by_username(username):
-            raise DuplicateUsernameError()
+            raise DuplicateUsernameError(username=username)
 
         if await self.user_repo.exists_by_email(email):
-            raise DuplicateEmailError()
+            raise DuplicateEmailError(email=email)
 
         return await self.user_repo.create(
             username=username,
@@ -34,7 +34,7 @@ class UserService:
         user = await self.user_repo.get_by_id(user_id)
 
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id=user_id)
 
         return user
 
@@ -61,13 +61,13 @@ class UserService:
         if username is not None:
             existing = await self.user_repo.get_by_username(username)
             if existing is not None and existing.id != current_user.id:
-                raise DuplicateUsernameError()
+                raise DuplicateUsernameError(username=username)
             current_user.username = username
 
         if email is not None:
             existing = await self.user_repo.get_by_email(email)
             if existing is not None and existing.id != current_user.id:
-                raise DuplicateEmailError()
+                raise DuplicateEmailError(email=email)
             current_user.email = email
 
         if password is not None:

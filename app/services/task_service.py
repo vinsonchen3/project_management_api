@@ -39,7 +39,7 @@ class TaskService:
         project = await self.project_repo.get_by_id_with_members(project_id)
 
         if project is None:
-            raise ProjectNotFoundError()
+            raise ProjectNotFoundError(project_id=project_id)
 
         await self._require_project_member(project, current_user)
 
@@ -61,7 +61,7 @@ class TaskService:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -84,7 +84,7 @@ class TaskService:
         task = await self.task_repo.get_by_id_with_project_members(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -99,17 +99,17 @@ class TaskService:
         task = await self.task_repo.get_by_id_with_assignees(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
 
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id=user_id)
 
         if user not in task.project.members:
-            raise UserNotInProjectError()
+            raise UserNotInProjectError(user_id=user_id)
 
         if user not in task.assignees:
             task.assignees.append(user)
@@ -125,14 +125,14 @@ class TaskService:
         task = await self.task_repo.get_by_id_with_assignees(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
         user = await self.user_repo.get_by_id(user_id)
 
         if user is None:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id=user_id)
 
         if user in task.assignees:
             task.assignees.remove(user)
@@ -147,7 +147,7 @@ class TaskService:
         task = await self.task_repo.get_by_id_detailed(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -161,7 +161,7 @@ class TaskService:
         task = await self.task_repo.get_by_id_with_assignees(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
@@ -175,7 +175,7 @@ class TaskService:
         task = await self.task_repo.get_by_id_detailed(task_id)
 
         if task is None:
-            raise TaskNotFoundError()
+            raise TaskNotFoundError(task_id=task_id)
 
         await self._require_project_member(task.project, current_user)
 
