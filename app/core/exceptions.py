@@ -1,29 +1,42 @@
-class UserNotFoundError(Exception):
+class APIException(Exception):
     pass
 
-class ProjectNotFoundError(Exception):
+
+class UserNotFoundError(APIException):
     pass
 
-class TaskNotFoundError(Exception):
+
+class ProjectNotFoundError(APIException):
     pass
 
-class CommentNotFoundError(Exception):
+
+class TaskNotFoundError(APIException):
     pass
 
-class DuplicateEmailError(Exception):
+
+class CommentNotFoundError(APIException):
     pass
 
-class DuplicateUsernameError(Exception):
+
+class DuplicateEmailError(APIException):
     pass
 
-class InvalidToken(Exception):
+
+class DuplicateUsernameError(APIException):
     pass
 
-class InvalidCredentials(Exception):
+
+class InvalidToken(APIException):
     pass
 
-class PermissionDeniedError(Exception):
+
+class InvalidCredentials(APIException):
     pass
 
-class UserNotInProjectError(Exception):
+
+class PermissionDeniedError(APIAPIException):
+    pass
+
+
+class UserNotInProjectError(APIException):
     pass
