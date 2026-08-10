@@ -31,7 +31,7 @@ class Task(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     title: Mapped[str] = mapped_column(String(250), default="Untitled")
-    description: Mapped[str] = mapped_column(Text)
+    description: Mapped[str | None] = mapped_column(Text)
     status: Mapped[TaskStatus] = mapped_column(
         Enum(TaskStatus), default=TaskStatus.TO_DO, nullable=False
     )
@@ -44,5 +44,7 @@ class Task(Base):
         back_populates="task", cascade="all, delete-orphan"
     )
 
-    project_id: Mapped[int] = mapped_column(ForeignKey("projects.id"), nullable=False)
+    project_id: Mapped[int] = mapped_column(
+        ForeignKey("projects.id", ondelete="CASCADE"), nullable=False
+    )
     project: Mapped["Project"] = relationship(back_populates="tasks")  # type: ignore
