@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 
-from app.auth.config import auth_settings
+from app.core.config import settings
 from app.core.exceptions import InvalidToken
 
 
@@ -18,7 +18,7 @@ def create_access_token(
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(
-            minutes=auth_settings.access_token_expire_minutes
+            minutes=settings.access_token_expire_minutes
         )
 
     to_encode.update(
@@ -30,8 +30,8 @@ def create_access_token(
 
     encoded_jwt = jwt.encode(
         to_encode,
-        auth_settings.secret_key.get_secret_value(),
-        algorithm=auth_settings.algorithm,
+        settings.secret_key.get_secret_value(),
+        algorithm=settings.algorithm,
     )
 
     return encoded_jwt
@@ -41,8 +41,8 @@ def decode_access_token(token: str) -> dict:
     try:
         payload = jwt.decode(
             token,
-            auth_settings.secret_key.get_secret_value(),
-            algorithms=[auth_settings.algorithm],
+            settings.secret_key.get_secret_value(),
+            algorithms=[settings.algorithm],
         )
 
         return payload

@@ -141,7 +141,7 @@ class ProjectService:
             raise ProjectNotFoundError(project_id=project_id)
 
         if project.owner_id == current_user.id:
-            raise PermissionDeniedError("Project owner cannot leave project")
+            raise PermissionDeniedError()
 
         if current_user in project.members:
             project.members.remove(current_user)
