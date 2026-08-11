@@ -16,7 +16,7 @@ class TaskBase(BaseModel):
 
 
 class TaskCreate(TaskBase):
-    project_id: int
+    pass
 
 
 class TaskUpdate(BaseModel):
