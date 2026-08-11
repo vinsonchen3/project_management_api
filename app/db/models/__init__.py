@@ -8,6 +8,6 @@ __all__ = [
     "Task",
     "Comment",
     "Project",
-    user_task_association,
-    project_user_association,
+    "user_task_association",
+    "project_user_association",
 ]
