@@ -23,4 +23,22 @@ def anyio_backend():
     return "asyncio"
 
 
-# test db
+# test db and db session
+@pytest.fixture(scope="session")
+def test_engine():
+    engine = create_async_engine(
+        settings.test_database_url,
+        poolclass=NullPool,
+    )
+    return engine
+
+
+@pytest.fixture(scope="session")
+async def setup_database():
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+    await test_engine.dispose()
