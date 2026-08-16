@@ -75,6 +75,7 @@ class AuthService:
         ):
             raise InvalidCredentials()
 
-        current_user.hashed_password = hash_password(new_password)
-
-        return await self.user_service.user_repo.update(current_user)
+        return await self.user_service.update_password(
+            current_user=current_user,
+            password=new_password,
+        )
