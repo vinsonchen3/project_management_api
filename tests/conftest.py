@@ -128,3 +128,46 @@ def auth_header(token: str) -> dict[str, str]:
     return {
         "Authorization": f"Bearer {token}",
     }
+
+
+async def create_project(
+    client: AsyncClient,
+    token: str,
+    name: str = "Test Project",
+    description: str = "Test project",
+) -> dict:
+    response = await client.post(
+        "/api/v1/projects/",
+        headers=auth_header(token),
+        json={
+            "name": name,
+            "description": description,
+        },
+    )
+
+    assert (
+        response.status_code == 201
+    ), f"Failed to create test project: {response.text}"
+
+    return response.json()
+
+
+async def create_task(
+    client: AsyncClient,
+    token: str,
+    project_id: int,
+    title: str = "Test Task",
+    description: str = "Test description",
+) -> dict:
+    response = await client.post(
+        f"/api/v1/projects/{project_id}/tasks",
+        headers=auth_header(token),
+        json={
+            "title": title,
+            "description": description,
+        },
+    )
+
+    assert response.status_code == 201, f"Failed to create test task: {response.text}"
+
+    return response.json()

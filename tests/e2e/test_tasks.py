@@ -5,44 +5,11 @@ from tests.conftest import (
     create_test_user,
     login_user,
     auth_header,
+    create_project,
+    create_task,
 )
 
 BASE_URL = "/api/v1"
-
-
-async def create_project(
-    client: AsyncClient,
-    token: str,
-) -> dict:
-    response = await client.post(
-        f"{BASE_URL}/projects/",
-        headers=auth_header(token),
-        json={
-            "name": "Test Project",
-            "description": "Test project",
-        },
-    )
-
-    assert response.status_code == 201
-    return response.json()
-
-
-async def create_task(
-    client: AsyncClient,
-    token: str,
-    project_id: int,
-) -> dict:
-    response = await client.post(
-        f"{BASE_URL}/projects/{project_id}/tasks",
-        headers=auth_header(token),
-        json={
-            "title": "Test Task",
-            "description": "Test description",
-        },
-    )
-
-    assert response.status_code == 201
-    return response.json()
 
 
 # ============================================================
