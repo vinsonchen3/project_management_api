@@ -12,7 +12,7 @@ async def api_exception_handler(
         status_code=exc.status_code,
         content={
             "error": exc.__class__.__name__,
-            "message": exc.message,
+            "detail": exc.message,
         },
     )
 
