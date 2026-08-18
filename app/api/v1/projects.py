@@ -123,6 +123,21 @@ async def add_member(  # for add_member because i have request as a query parame
 
 
 @router.delete(
+    "/{project_id}/members/me",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def leave_project(
+    project_id: int,
+    current_user: CurrentUser,
+    project_service: ProjectServiceDep,
+):
+    await project_service.leave_project(
+        current_user=current_user,
+        project_id=project_id,
+    )
+
+
+@router.delete(
     "/{project_id}/members/{user_id}",
     response_model=ProjectResponse,
 )
@@ -136,21 +151,6 @@ async def remove_member(
         current_user=current_user,
         project_id=project_id,
         user_id=user_id,
-    )
-
-
-@router.delete(
-    "/{project_id}/members/me",
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-async def leave_project(
-    project_id: int,
-    current_user: CurrentUser,
-    project_service: ProjectServiceDep,
-):
-    await project_service.leave_project(
-        current_user=current_user,
-        project_id=project_id,
     )
 
 
