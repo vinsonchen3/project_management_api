@@ -15,6 +15,7 @@ env/
 !.env.example
 
 # Testing / coverage
+tests/
 .pytest_cache/
 .coverage
 htmlcov/
