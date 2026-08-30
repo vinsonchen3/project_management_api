@@ -16,5 +16,10 @@ class Settings(BaseSettings):
     database_url: str
     test_database_url: str | None = None
 
+import os
 
+print("SECRET_KEY exists:", "SECRET_KEY" in os.environ)
+print("ALGORITHM exists:", "ALGORITHM" in os.environ)
+print("PASSWORD_HASH_SCHEME exists:", "PASSWORD_HASH_SCHEME" in os.environ)
+print("DATABASE_URL exists:", "DATABASE_URL" in os.environ)
 settings = Settings()
