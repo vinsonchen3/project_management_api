@@ -2,6 +2,10 @@
 
 A Jira-style project management REST API built with **FastAPI, PostgreSQL, and SQLAlchemy**. The API provides authentication, project and task management, project membership, task assignment, and comments with resource-level authorization.
 
+**[Live API](https://projectmanagementapi-production-ac8b.up.railway.app/docs)**
+
+> **Note:** The live deployment is hosted on Railway for demonstration purposes and may be unavailable when the service is not actively maintained due to cost.
+
 ## Features
 
 * **JWT authentication**
