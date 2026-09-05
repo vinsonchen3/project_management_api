@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+      POSTGRES_TEST_DB: app_test
+
+      SECRET_KEY: test-secret-key
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      PASSWORD_HASH_SCHEME: argon2id
+
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/app
+      TEST_DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres_test:5432/app_test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start containers
+        run: docker compose -f compose.yaml -f compose.dev.yaml up -d --build
+
+      - name: Run tests
+        run: docker compose -f compose.yaml -f compose.dev.yaml exec -T api python -m pytest
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f compose.yaml -f compose.dev.yaml down -v

@@ -35,3 +35,5 @@ register_exception_handlers(app)
 @app.get("/")
 def root():
     return {"Hello": "world"}
+
+# test github actions with newtestdb
