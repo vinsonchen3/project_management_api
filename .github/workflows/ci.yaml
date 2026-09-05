@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and start containers
+        run: docker compose -f compose.yaml -f compose.dev.yaml up -d --build
+
+      - name: Run tests
+        run: docker compose -f compose.yaml -f compose.dev.yaml exec -T api pytest
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f compose.yaml -f compose.dev.yaml down -v
