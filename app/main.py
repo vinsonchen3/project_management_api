@@ -36,4 +36,4 @@ register_exception_handlers(app)
 def root():
     return {"Hello": "world"}
 
-# test github actions
+# test github actions with newtestdb
